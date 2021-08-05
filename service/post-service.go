@@ -23,18 +23,15 @@ func NewPostService(repo repository.PostRepository) PostService {
 
 func (s *postService) Validate(post *entity.Post) error {
 	if post == nil {
-		err := errors.New("The post is empty")
-		return err
+		return errors.New("The post is empty")
 	}
 
 	if post.Title == "" {
-		err := errors.New("The post title is empty")
-		return err
+		return errors.New("The post title is empty")
 	}
 
 	if post.Text == "" {
-		err := errors.New("The post text is empty")
-		return err
+		return errors.New("The post text is empty")
 	}
 
 	return nil
@@ -49,6 +46,5 @@ func (s *postService) FindAll() ([]entity.Post, error) {
 }
 
 func (s *postService) FindOne(id string) (*entity.Post, error) {
-
 	return s.repo.FindOne(id)
 }

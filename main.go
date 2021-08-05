@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-const port = ":8080"
+const port string = ":8080"
 
 type Map map[string]interface{}
 
@@ -27,12 +27,7 @@ var (
 )
 
 func main() {
-	// router := mux.NewRouter()
-
-	// router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	utils.Json(w, http.StatusOK)(Map{"msg": "Hello"})
-	// })
-
+	
 	httpRouter.GET("/", func(w http.ResponseWriter, r *http.Request) {
 		utils.Json(w, http.StatusOK)("Hello")
 	})
@@ -42,6 +37,7 @@ func main() {
 	httpRouter.POST("/posts", postController.AddPost)
 	httpRouter.SERVE(port)
 
+	// router := mux.NewRouter()
 	// routes.Serve(router)
 	// log.Println("Server listening on port: ", port)
 	// log.Fatalln(http.ListenAndServe(":"+port, router))

@@ -31,7 +31,7 @@ func NewPostController(service service.PostService) PostController {
 
 func (sv *postController) GetPost(w http.ResponseWriter, r *http.Request) {
 	// id := mux.Vars(r)["id"]
-	id := chi.URLParam(r, "id")
+	id := chi.URLParam(r, "id") 
 
 	post, err := sv.service.FindOne(id)
 	if err != nil {
