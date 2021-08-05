@@ -1,10 +1,10 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
+	"sing3demons/go-rest-api/routes"
+	"sing3demons/go-rest-api/utils"
 
 	"github.com/gorilla/mux"
 )
@@ -18,46 +18,11 @@ func main() {
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 
-		Json(w, http.StatusOK)(Map{"msg": "Hello"})
+		utils.Json(w, http.StatusOK)(Map{"msg": "Hello"})
 	})
 
-	router.HandleFunc("/posts", getPosts).Methods(http.MethodGet)
-	router.HandleFunc("/posts", addPost).Methods(http.MethodPost)
+	routes.Serve(router)
 
 	log.Println("Server listening on port: ", port)
 	log.Fatalln(http.ListenAndServe(":"+port, router))
-}
-
-func Json(w http.ResponseWriter, statusCode int) func(v interface{}) error {
-	w.Header().Set("Content-Type", "application/json; charset=UTF8")
-	w.WriteHeader(statusCode)
-
-	return func(v interface{}) error {
-		return json.NewEncoder(w).Encode(v)
-	}
-}
-
-func ToJson(w http.ResponseWriter, statusCode int) func(v interface{}) error {
-	w.Header().Add("Content-Type", "application/json")
-
-	return func(v interface{}) error {
-		result, err := json.Marshal(v)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte(`{"error": "Error marshalling the posts array"}`))
-			return err
-		}
-
-		w.WriteHeader(statusCode)
-		w.Write(result)
-		return nil
-	}
-}
-
-func ErrorToJson(w http.ResponseWriter, statusCode int) func(v interface{}) {
-	w.Header().Add("Content-Type", "application/json")
-	return func(v interface{}) {
-		w.WriteHeader(statusCode)
-		w.Write([]byte(fmt.Sprintf(`{"error": "%v"}`, v)))
-	}
 }
