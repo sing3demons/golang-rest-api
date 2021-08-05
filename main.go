@@ -17,7 +17,9 @@ const port = ":8080"
 type Map map[string]interface{}
 
 var (
-	httpRouter     router.Router             = router.NewMuxRouter()
+	// httpRouter     router.Router             = router.NewMuxRouter()
+	httpRouter router.Router = router.NewChiRouter()
+
 	db             *mongo.Database           = database.ConnectMongoDB()
 	postRepository repository.PostRepository = repository.NewMongoRepository(db)
 	postService    service.PostService       = service.NewPostService(postRepository)

@@ -1,12 +1,30 @@
 package router
 
-import "net/http"
+import (
+	"fmt"
+	"log"
+	"net/http"
 
-type chaiRouter struct {
+	"github.com/go-chi/chi/v5"
+)
+
+type chiRouter struct {
 }
 
-func NewChoRouter() Router { return &chaiRouter{} }
+var (
+	chiDispatcher = chi.NewRouter()
+)
 
-func (*chaiRouter) GET(uri string, f func(w http.ResponseWriter, r *http.Request))
-func (*chaiRouter) POST(uri string, f func(w http.ResponseWriter, r *http.Request))
-func (*chaiRouter) SERVE(port string)
+func NewChiRouter() Router { return &chiRouter{} }
+
+func (*chiRouter) GET(uri string, f func(w http.ResponseWriter, r *http.Request)) {
+	chiDispatcher.Get(uri, f)
+}
+func (*chiRouter) POST(uri string, f func(w http.ResponseWriter, r *http.Request)) {
+	chiDispatcher.Post(uri, f)
+}
+func (*chiRouter) SERVE(port string) {
+	// chiDispatcher.Use(middleware.Logger)
+	fmt.Printf("Chi Http server running on port %v\n", port)
+	log.Fatal(http.ListenAndServe(port, chiDispatcher))
+}
