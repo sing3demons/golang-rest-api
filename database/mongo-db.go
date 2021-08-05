@@ -2,7 +2,7 @@ package database
 
 import (
 	"context"
-	"log"
+	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -28,7 +28,7 @@ func ConnectMongoDB() *mongo.Database {
 		panic(err)
 	}
 
-	log.Println("Connected to MongoDB!")
+	fmt.Println("Connected to MongoDB!")
 
 	db := client.Database(databaseName)
 	return db

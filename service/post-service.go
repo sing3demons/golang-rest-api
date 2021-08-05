@@ -10,6 +10,7 @@ type PostService interface {
 	Validate(post *entity.Post) error
 	Create(post *entity.Post) (*entity.Post, error)
 	FindAll() ([]entity.Post, error)
+	FindOne(id string) (*entity.Post, error)
 }
 
 type postService struct {
@@ -45,4 +46,9 @@ func (s *postService) Create(post *entity.Post) (*entity.Post, error) {
 
 func (s *postService) FindAll() ([]entity.Post, error) {
 	return s.repo.FindAll()
+}
+
+func (s *postService) FindOne(id string) (*entity.Post, error) {
+
+	return s.repo.FindOne(id)
 }

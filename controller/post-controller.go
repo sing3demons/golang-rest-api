@@ -6,11 +6,19 @@ import (
 	"sing3demons/go-rest-api/entity"
 	"sing3demons/go-rest-api/service"
 	"sing3demons/go-rest-api/utils"
+
+	"github.com/gorilla/mux"
 )
+
+type ResponsePost struct {
+	Title string `json:"title"`
+	Text  string `json:"text"`
+}
 
 type PostController interface {
 	GetPosts(w http.ResponseWriter, r *http.Request)
 	AddPost(w http.ResponseWriter, r *http.Request)
+	GetPost(w http.ResponseWriter, r *http.Request)
 }
 
 type postController struct {
@@ -21,17 +29,27 @@ func NewPostController(service service.PostService) PostController {
 	return &postController{service: service}
 }
 
+func (sv *postController) GetPost(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+
+	post, err := sv.service.FindOne(id)
+	if err != nil {
+		utils.ErrorToJson(w, http.StatusInternalServerError)("Error getting the post")
+		return
+	}
+
+	utils.Json(w, http.StatusOK)(post)
+}
+
 func (sv *postController) GetPosts(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
 	posts, err := sv.service.FindAll()
 	if err != nil {
 		utils.ErrorToJson(w, http.StatusInternalServerError)("Error getting the posts")
 		return
 	}
 
-	w.WriteHeader(http.StatusOK)
 	// w.Write(result)
-	json.NewEncoder(w).Encode(posts)
+	utils.Json(w, http.StatusOK)(posts)
 
 }
 
@@ -53,7 +71,9 @@ func (sv *postController) AddPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(p)
+	var resp ResponsePost
+	resp.Title = p.Title
+	resp.Text = p.Text
+
+	utils.Json(w, http.StatusCreated)(resp)
 }
