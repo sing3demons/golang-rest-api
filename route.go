@@ -23,8 +23,7 @@ func getPosts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	result, err := json.Marshal(posts)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error": "Error marshalling the posts array"}`))
+		ErrorToJson(w, http.StatusInternalServerError)("Error marshalling the posts array")
 		return
 	}
 
@@ -37,8 +36,7 @@ func addPost(w http.ResponseWriter, r *http.Request) {
 	var post Post
 	err := json.NewDecoder(r.Body).Decode(&post)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error": "Error marshalling the request"}`))
+		ErrorToJson(w, http.StatusInternalServerError)("Error marshalling the request")
 		return
 	}
 
@@ -47,6 +45,10 @@ func addPost(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	result, _ := json.Marshal(posts)
+	result, err := json.Marshal(posts)
+	if err != nil {
+		ErrorToJson(w, http.StatusInternalServerError)("Error marshalling the posts array")
+		return
+	}
 	w.Write(result)
 }

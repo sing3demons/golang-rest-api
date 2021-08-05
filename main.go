@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -50,5 +51,13 @@ func ToJson(w http.ResponseWriter, statusCode int) func(v interface{}) error {
 		w.WriteHeader(statusCode)
 		w.Write(result)
 		return nil
+	}
+}
+
+func ErrorToJson(w http.ResponseWriter, statusCode int) func(v interface{}) {
+	w.Header().Add("Content-Type", "application/json")
+	return func(v interface{}) {
+		w.WriteHeader(statusCode)
+		w.Write([]byte(fmt.Sprintf(`{"error": "%v"}`, v)))
 	}
 }
